@@ -32,7 +32,7 @@ pip install git+https://github.com/dnobrega/fieldline-tracing-proto.git
 Or clone the repository:
 ```bash
 git clone https://github.com/dnobrega/fieldline-tracing-proto.git
-cd nullfinder-proto
+cd fieldline-tracing-proto
 pip install -e .
 ```
 Requires Python ≥ 3.10.
