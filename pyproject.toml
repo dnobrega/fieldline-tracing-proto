@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fieldline-tracing-proto"
+version = "0.2.0"
+description = "Magnetic field-line tracing on Cartesian grids with RK2 and adaptive RK45"
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{name = "Daniel Nobrega-Siverio"}]
+keywords = ["magnetic field", "field-line tracing", "solar physics", "magnetohydrodynamics", "Bifrost"]
+dependencies = [
+    "numpy>=1.24",
+    "numba>=0.60,<0.69; python_version < '3.13'",
+    "numba>=0.65.1,<0.69; python_version >= '3.13'",
+]
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.7", "scipy>=1.10"]
+test = ["pytest>=8", "scipy>=1.10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["fieldline_tracing_proto"]
+namespaces = false

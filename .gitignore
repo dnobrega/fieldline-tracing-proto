@@ -1,0 +1,17 @@
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+*.nbc
+*.nbi
+.pytest_cache/
+.DS_Store
+*.egg-info/
+build/
+dist/
+*.zip
+.coverage
+htmlcov/
+.ruff_cache/
+validation/output/
+arcade.png

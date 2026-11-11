@@ -1,0 +1,53 @@
+name: Tests and distributions
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    env:
+      NUMBA_NUM_THREADS: "2"
+      MPLBACKEND: Agg
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.10"
+            numba: "numba==0.60.0"
+          - os: ubuntu-latest
+            python: "3.12"
+            numba: "numba==0.68.1"
+          - os: ubuntu-latest
+            python: "3.14"
+            numba: "numba==0.68.1"
+          - os: macos-15
+            python: "3.14"
+            numba: "numba==0.68.1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install ".[test,plot]" "${{ matrix.numba }}"
+      - run: python -m pytest -q
+      - run: python examples/plot_arcade.py --output "$RUNNER_TEMP/arcade.png"
+      - run: python -m pip install build
+      - run: python -m build
+      - name: Smoke-test the wheel outside the checkout
+        shell: bash
+        run: |
+          python -m venv --system-site-packages "$RUNNER_TEMP/wheel-check"
+          "$RUNNER_TEMP/wheel-check/bin/python" -m pip install --no-deps --force-reinstall dist/*.whl
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/wheel-check/bin/python" -I -c 'import sys; from pathlib import Path; import fieldline_tracing_proto as p; assert Path(p.__file__).resolve().is_relative_to(Path(sys.prefix).resolve()); assert p.__version__ == "0.2.0"'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributions-${{ matrix.os }}-python-${{ matrix.python }}
+          path: dist/

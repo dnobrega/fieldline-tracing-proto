@@ -1,0 +1,10 @@
+{
+  "source": "nullfinder-proto/benchmarks/olshevsky2020_field.py",
+  "date": "2026-11-09",
+  "original_sha256": "48ee969b806d7073d183274474c74f9bea46ee93c442aaf6249f556f0139c213",
+  "local_sha256": "639aab3923753b9ba2108f2e6535b6ba2f1b844006e85b932927c1fd22d099dc",
+  "changes": [
+    "Remove zip(strict=True), unavailable on Python 3.9, after exact-length validation."
+  ],
+  "license": "BSD-3-Clause; upstream copyright/license in LICENSE.md"
+}

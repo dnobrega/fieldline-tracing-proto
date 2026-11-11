@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "Please cite this software when using it in research."
+title: "Fieldline Tracing Proto"
+type: software
+version: 0.2.0
+authors:
+  - family-names: Nobrega-Siverio
+    given-names: Daniel
+abstract: "Cartesian magnetic field-line tracing with RK2 and adaptive RK45, scalar sampling and diagnostics."
+license: BSD-3-Clause
+keywords:
+  - magnetic field
+  - field-line tracing
+  - solar physics
+  - magnetohydrodynamics

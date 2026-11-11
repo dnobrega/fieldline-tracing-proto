@@ -1,0 +1,7 @@
+include README.md CHANGELOG.md CONTRIBUTING.md CITATION.cff LICENSE
+recursive-include docs *.md *.png
+recursive-include examples *.py
+global-exclude *.pyc *.pyo *.nbc *.nbi .DS_Store
+prune validation
+prune tests
+prune .github
