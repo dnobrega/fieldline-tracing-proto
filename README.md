@@ -39,9 +39,6 @@ Requires Python ≥ 3.10.
 
 ## Quick start
 
-Pass colocated component arrays in `(nx, ny, nz)` order. Grid coordinates and
-seed columns use `(x, y, z)`. Both C and Fortran layouts are supported.
-
 ```python
 import numpy as np
 from fieldline_tracing_proto import trace_field_lines
@@ -86,6 +83,8 @@ coordinates consistent with their locations.
 
 **Indexing.** Arrays have shape `(nx, ny, nz)` and are accessed as
 `arr[i, j, k]`. Coordinates are 1D, finite and strictly monotonic.
+
+**Arrays type.** Both C and Fortran layouts are supported.
 
 ## Warnings
 
