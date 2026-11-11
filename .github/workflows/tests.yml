@@ -30,8 +30,8 @@ jobs:
             python: "3.14"
             numba: "numba==0.68.1"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
       - run: python -m pip install ".[test]" "${{ matrix.numba }}"
@@ -46,7 +46,7 @@ jobs:
           "$RUNNER_TEMP/wheel-check/bin/python" -m pip install --no-deps --force-reinstall dist/*.whl
           cd "$RUNNER_TEMP"
           "$RUNNER_TEMP/wheel-check/bin/python" -I -c 'import sys; from pathlib import Path; import fieldline_tracing_proto as p; assert Path(p.__file__).resolve().is_relative_to(Path(sys.prefix).resolve()); assert p.__version__ == "0.2.0"'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: distributions-${{ matrix.os }}-python-${{ matrix.python }}
           path: dist/
