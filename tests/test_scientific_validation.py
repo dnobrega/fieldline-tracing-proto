@@ -78,6 +78,10 @@ def constant_field_trace(vector, seed=(0.0, 0.0, 0.0), **controls):
         "boundary_tol": 1e-9,
     }
     opts.update(controls)
+    span = grid[-1] - grid[0]
+    opts.setdefault(
+        "period", tuple(span if opts[f"periodic_{a}"] else 0.0 for a in "xyz")
+    )
     return trace_field_lines(
         *(np.full(shape, v) for v in vector),
         grid,

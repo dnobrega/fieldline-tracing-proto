@@ -28,6 +28,9 @@ def test_unequal_branch_lengths_and_final_points(dtype, stride):
         10,
         save_stride=stride,
         dtype=dtype,
+        periodic_x=True,
+        periodic_y=True,
+        period=(grid[-1] - grid[0],) * 2 + (0.0,),
         periodic_convention="endpoint_included",
     )
     np.testing.assert_array_equal(result.nsteps_minus, [1, 8, 10])
@@ -64,6 +67,9 @@ def test_curved_trace_and_affine_sampling_across_shared_stencil(dtype):
         37,
         save_stride=4,
         dtype=dtype,
+        periodic_x=True,
+        periodic_y=True,
+        period=(grid[-1] - grid[0],) * 2 + (0.0,),
         periodic_convention="endpoint_included",
     )
     sample = sample_scalar_on_lines(

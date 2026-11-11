@@ -98,6 +98,7 @@ def test_endpoint_excluded_periodic_seam_and_one_period(order):
         np.array([[1.3, 0.5, 0.5]]),
         1 / 64,
         64,
+        periodic_x=True,
         periodic_y=False,
         period=(1.0, 0.0, 0.0),
     )
@@ -139,6 +140,7 @@ def test_periodic_sheared_field_has_no_secular_drift():
         np.array([[0.0, 0.5, 0.5]]),
         1 / 512,
         10000,
+        periodic_x=True,
         periodic_y=False,
         period=(1.0, 0.0, 0.0),
     )
@@ -164,6 +166,7 @@ def test_nonuniform_period_requires_explicit_physical_length():
         np.array([[0.7, 0.5, 0.5]]),
         0.01,
         2,
+        periodic_x=True,
         periodic_y=False,
         period=(1.0, 0.0, 0.0),
     )
@@ -438,6 +441,7 @@ def test_periodic_winding_on_continuous_cover_and_sparse_rejection():
     kwargs = {
         "method": "rk45",
         "max_length": 2.0,
+        "periodic_x": True,
         "periodic_y": False,
         "period": (1.0, 0.0, 0.0),
     }
@@ -460,7 +464,19 @@ def test_schema3_preserves_layout_period_endpoints_and_arc(tmp_path):
     x = np.arange(4) / 4
     a = np.ones((4, 4, 4), dtype=np.float32, order="F")
     r = trace_field_lines(
-        a * 0, a * 0, a, x, x, x, [[0.2, 0.2, 0.4]], 0.1, 100, method="rk45"
+        a * 0,
+        a * 0,
+        a,
+        x,
+        x,
+        x,
+        [[0.2, 0.2, 0.4]],
+        0.1,
+        100,
+        method="rk45",
+        periodic_x=True,
+        periodic_y=True,
+        period=(1.0, 1.0, 0.0),
     )
     path = tmp_path / "trace.npz"
     save_trace_npz(path, r)
@@ -497,7 +513,9 @@ def test_whole_period_steps_retain_arc_even_when_wrapped_positions_coincide(
         1.0,
         1,
         method=method,
+        periodic_x=True,
         periodic_y=False,
+        period=(1.0, 0.0, 0.0),
         max_length=1.0,
         storage=storage,
         **kwargs,

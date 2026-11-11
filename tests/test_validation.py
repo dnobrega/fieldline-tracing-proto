@@ -25,6 +25,9 @@ def trace(**overrides):
         "ds": 0.1,
         "max_steps": 3,
         "dtype": np.float64,
+        "periodic_x": True,
+        "periodic_y": True,
+        "period": (2.0, 2.0, 0.0),
     }
     options.update(overrides)
     return trace_field_lines(**options, periodic_convention="endpoint_included")

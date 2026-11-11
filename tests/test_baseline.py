@@ -120,6 +120,9 @@ def test_boundary_reports_exact_partial_endpoint(ds):
         ds,
         100,
         dtype=np.float64,
+        periodic_x=True,
+        periodic_y=True,
+        period=(grid[-1] - grid[0],) * 2 + (0.0,),
         periodic_convention="endpoint_included",
     )
     assert result.exit_code_minus[0] == -1
@@ -144,6 +147,9 @@ def test_periodic_seam_and_arc_length():
         0.125,
         5,
         dtype=np.float64,
+        periodic_x=True,
+        periodic_y=True,
+        period=(grid[-1] - grid[0],) * 2 + (0.0,),
         periodic_convention="endpoint_included",
     )
     np.testing.assert_allclose(result.xfl, (0.9 + np.arange(-5, 6) * 0.125) % 1.0)
@@ -169,6 +175,9 @@ def test_null_field():
         np.zeros((1, 3)),
         0.1,
         10,
+        periodic_x=True,
+        periodic_y=True,
+        period=(grid[-1] - grid[0],) * 2 + (0.0,),
         periodic_convention="endpoint_included",
     )
     np.testing.assert_array_equal(result.line_count, [1])

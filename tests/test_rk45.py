@@ -97,6 +97,9 @@ def test_periodic_seams_do_not_create_error_rejections():
         dtype=np.float64,
         rtol=1e-10,
         atol=1e-12,
+        periodic_x=True,
+        periodic_y=True,
+        period=(grid[-1] - grid[0],) * 2 + (0.0,),
         periodic_convention="endpoint_included",
     )
     signed_s = r.sfl - 3.0
@@ -169,6 +172,9 @@ def test_weak_and_invalid_field_stops(invalid):
         0.1,
         100,
         method="rk45",
+        periodic_x=True,
+        periodic_y=True,
+        period=(grid[-1] - grid[0],) * 2 + (0.0,),
         periodic_convention="endpoint_included",
     )
     code = 8 if invalid == 0 else 9
