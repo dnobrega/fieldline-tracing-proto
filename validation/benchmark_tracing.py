@@ -9,22 +9,23 @@ import gc
 import hashlib
 import json
 import os
-from pathlib import Path
 import platform
 import random
 import resource
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 os.environ.setdefault("NUMBA_NUM_THREADS", "2")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import numba
 import numpy as np
-from fieldline_tracing_proto.tracing import trace_field_lines
+
 from fieldline_tracing_proto import __version__
-from validation.run_validation import write_csv, format_table
+from fieldline_tracing_proto.tracing import trace_field_lines
+from validation.run_validation import format_table, write_csv
 
 LENGTH = 2.0
 

@@ -7,9 +7,9 @@ import argparse
 import hashlib
 import json
 import os
-from pathlib import Path
 import platform
 import sys
+from pathlib import Path
 from types import SimpleNamespace
 
 os.environ.setdefault("NUMBA_NUM_THREADS", "2")
@@ -19,12 +19,12 @@ import numba
 import numpy as np
 from scipy.integrate import quad
 from scipy.optimize import brentq
-from fieldline_tracing_proto.tracing import trace_field_lines
-from fieldline_tracing_proto.sampling import sample_scalar_on_lines
-from fieldline_tracing_proto.diagnostics import compute_line_diagnostics
-from fieldline_tracing_proto.winding import compute_local_winding
-from validation.run_validation import write_csv, format_table
 
+from fieldline_tracing_proto.diagnostics import compute_line_diagnostics
+from fieldline_tracing_proto.sampling import sample_scalar_on_lines
+from fieldline_tracing_proto.tracing import trace_field_lines
+from fieldline_tracing_proto.winding import compute_local_winding
+from validation.run_validation import format_table, write_csv
 
 CENTER = 7 / 32
 SIGMA = 1 / 32

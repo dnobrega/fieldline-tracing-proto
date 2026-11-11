@@ -1,9 +1,11 @@
 """Bounded optimistic branch buffers, compiled compaction and exact retries."""
 
 from numbers import Integral
+
 import numpy as np
 from numba import get_num_threads
-from ._kernels import _single_block, _count_lines, _fill_lines, _compact_block
+
+from ._kernels import _compact_block, _count_lines, _fill_lines, _single_block
 
 
 def _starts(counts):

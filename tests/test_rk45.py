@@ -8,9 +8,9 @@ from scipy.integrate import solve_ivp
 from scipy.interpolate import RegularGridInterpolator
 
 from fieldline_tracing_proto.tracing import (
-    trace_field_lines,
-    save_trace_npz,
     load_trace_npz,
+    save_trace_npz,
+    trace_field_lines,
 )
 
 

@@ -2,7 +2,8 @@
 
 import numpy as np
 from numba import njit
-from .field import PARAMS_A1, EXACT_NULLS
+
+from .field import EXACT_NULLS, PARAMS_A1
 
 
 @njit(cache=True)

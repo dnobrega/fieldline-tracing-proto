@@ -2,19 +2,21 @@
 
 import json
 from types import SimpleNamespace
+
 import numpy as np
 import pytest
+
 from fieldline_tracing_proto import (
-    trace_field_lines,
-    sample_scalar_on_lines,
-    compute_local_winding,
     compute_line_diagnostics,
+    compute_local_winding,
+    sample_scalar_on_lines,
+    trace_field_lines,
 )
 from fieldline_tracing_proto.grid import (
-    prepare_array,
-    is_uniform_grid,
     _find_index_1d,
     _inv_spacing,
+    is_uniform_grid,
+    prepare_array,
 )
 
 
@@ -446,7 +448,7 @@ def test_periodic_winding_on_continuous_cover_and_sparse_rejection():
 
 
 def test_schema3_preserves_layout_period_endpoints_and_arc(tmp_path):
-    from fieldline_tracing_proto import save_trace_npz, load_trace_npz
+    from fieldline_tracing_proto import load_trace_npz, save_trace_npz
 
     x = np.arange(4) / 4
     a = np.ones((4, 4, 4), dtype=np.float32, order="F")

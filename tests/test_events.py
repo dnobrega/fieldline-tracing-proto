@@ -5,10 +5,10 @@ import pytest
 from scipy.integrate import RK45
 
 from fieldline_tracing_proto.events import (
-    _first_face_crossing,
-    _stationary_points,
     _DP_P,
+    _first_face_crossing,
     _range_proves_inside,
+    _stationary_points,
 )
 from fieldline_tracing_proto.tracing import trace_field_lines
 

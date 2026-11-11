@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 
 from fieldline_tracing_proto.grid import _wrap_coord
-from fieldline_tracing_proto.tracing import trace_field_lines, ragged_to_padded
 from fieldline_tracing_proto.sampling import sample_scalar_on_lines
+from fieldline_tracing_proto.tracing import ragged_to_padded, trace_field_lines
 
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64])

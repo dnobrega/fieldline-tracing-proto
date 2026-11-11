@@ -3,18 +3,18 @@
 import numpy as np
 import pytest
 
-from validation.diagnostic_sensitivity import (
-    scalar_case,
-    scalar_reference,
-    synthetic_pair,
-    pair_winding,
-)
 from validation.benchmark_tracing import (
     calibrate,
     geometry,
     solve,
     trajectory_error,
     worker,
+)
+from validation.diagnostic_sensitivity import (
+    pair_winding,
+    scalar_case,
+    scalar_reference,
+    synthetic_pair,
 )
 
 

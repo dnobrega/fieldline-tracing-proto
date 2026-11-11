@@ -1,15 +1,17 @@
 """Scientific/storage contracts for scalar kernels and optimistic buffers."""
 
 import json
+import warnings
 from decimal import Decimal, localcontext
 from types import SimpleNamespace
-import warnings
+
 import numpy as np
 import pytest
+
 from fieldline_tracing_proto import (
-    trace_field_lines,
-    compute_local_winding,
     PeriodicInferenceWarning,
+    compute_local_winding,
+    trace_field_lines,
 )
 from fieldline_tracing_proto.events import _range_proves_inside
 
@@ -371,7 +373,7 @@ def test_nonperiodic_closed_return_retains_terminal_arc(dtype):
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64])
 def test_exact_trace_anchors_prevent_rounding_outside_scalar_domain(dtype):
-    from fieldline_tracing_proto import sample_scalar_on_lines, compute_line_diagnostics
+    from fieldline_tracing_proto import compute_line_diagnostics, sample_scalar_on_lines
 
     g = np.array([0.0, 1.1])
     a = np.ones((2, 2, 2), dtype)

@@ -5,9 +5,10 @@ plane normal to the mean seed tangent. This is a specified local proxy, not
 a parameterization-independent or Gauss linking invariant.
 """
 
+import json
 from dataclasses import dataclass
 from numbers import Integral
-import json
+
 import numpy as np
 from numba import njit, prange
 

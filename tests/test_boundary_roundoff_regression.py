@@ -1,14 +1,14 @@
 """Regression for the real 256³ Olshevsky near-face RK45 underflow."""
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import numpy as np
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from validation.olshevsky.field import create_grid, olshevsky2020_field
 from fieldline_tracing_proto import trace_field_lines
+from validation.olshevsky.field import create_grid, olshevsky2020_field
 
 
 @pytest.fixture(scope="module")

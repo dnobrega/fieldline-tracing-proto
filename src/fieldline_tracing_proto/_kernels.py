@@ -6,18 +6,18 @@ tuples. The scientific RK/event algorithms retain strict arithmetic and caching.
 
 import numpy as np
 from numba import njit, prange
-from .grid import (
-    EXIT_MAX_STEPS,
-    EXIT_BNORM_TOO_SMALL,
-    EXIT_NAN,
-    EXIT_MAX_LENGTH,
-    EXIT_STEP_UNDERFLOW,
-    EXIT_MAX_ATTEMPTS,
-    _wrap_coord,
-    _interpolation_stencil,
-    _apply_indices,
-)
 
+from .grid import (
+    EXIT_BNORM_TOO_SMALL,
+    EXIT_MAX_ATTEMPTS,
+    EXIT_MAX_LENGTH,
+    EXIT_MAX_STEPS,
+    EXIT_NAN,
+    EXIT_STEP_UNDERFLOW,
+    _apply_indices,
+    _interpolation_stencil,
+    _wrap_coord,
+)
 
 # Dormand–Prince 5(4) tableau (Dormand & Prince, 1980).
 _DP_A = np.array(
@@ -44,14 +44,14 @@ _DP_E = np.array(
 )
 
 
-from .grid import _axis_cell, _uniform_axis_cell
 from .events import (
     _DP_P,
-    _first_face_crossing_into,
     _dense_first_exit_into,
+    _first_face_crossing_into,
     _poly,
     _range_proves_inside,
 )
+from .grid import _axis_cell, _uniform_axis_cell
 
 
 @njit(cache=True, forceinline=True)

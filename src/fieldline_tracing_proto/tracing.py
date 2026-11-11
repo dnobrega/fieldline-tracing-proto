@@ -8,35 +8,33 @@ for error control, boundary semantics, exit codes and storage conventions.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, fields
 import json
-from typing import Tuple
+from dataclasses import dataclass, fields
 from numbers import Integral, Real
 
 import numpy as np
 
-
 from .grid import (
-    PeriodicInferenceWarning,
-    EXIT_ZMIN,
-    EXIT_ZMAX,
-    EXIT_YMIN,
-    EXIT_YMAX,
-    EXIT_XMIN,
-    EXIT_XMAX,
-    EXIT_MAX_STEPS,
     EXIT_BNORM_TOO_SMALL,
-    EXIT_NAN,
     EXIT_INTERP_ERROR,
-    EXIT_MAX_LENGTH,
-    EXIT_STEP_UNDERFLOW,
     EXIT_MAX_ATTEMPTS,
-    validate_cartesian_grid,
-    is_uniform_grid,
+    EXIT_MAX_LENGTH,
+    EXIT_MAX_STEPS,
+    EXIT_NAN,
+    EXIT_STEP_UNDERFLOW,
+    EXIT_XMAX,
+    EXIT_XMIN,
+    EXIT_YMAX,
+    EXIT_YMIN,
+    EXIT_ZMAX,
+    EXIT_ZMIN,
+    PeriodicInferenceWarning,
     _inv_spacing,
+    is_uniform_grid,
+    lookup_table,
     prepare_array,
     prepare_periods,
-    lookup_table,
+    validate_cartesian_grid,
 )
 
 
@@ -78,7 +76,7 @@ class TraceResult:
         # Number of points
         return int(self.xfl.size)
 
-    def get_line(self, i: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def get_line(self, i: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         # Function to get the coordinates of the line number #i
         i0 = int(self.line_start[i])
         i1 = i0 + int(self.line_count[i])
@@ -494,9 +492,17 @@ def exit_code_meaning(code: int) -> str:
 
 # Private aliases retain the developer inspection entry points.
 from ._kernels import (
-    _rhs as _rhs,
-    _rhs_xyz as _rhs_xyz,
     _branch as _branch,
+)
+from ._kernels import (
+    _rhs as _rhs,
+)
+from ._kernels import (
+    _rhs_xyz as _rhs_xyz,
+)
+from ._kernels import (
     _rk2_trial as _rk2_trial,
+)
+from ._kernels import (
     _rk45_trial as _rk45_trial,
 )

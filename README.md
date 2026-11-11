@@ -55,9 +55,19 @@ bx, by, bz = np.cos(X) * decay, np.zeros_like(Y), -np.sin(X) * decay
 
 
 result = trace_field_lines(
-    bx, by, bz, x, y, z, seeds=[[0.0, 0.0, 0.8]],
-    ds=0.01, max_steps=4000, method="rk45",
-    periodic_x=False, periodic_y=False, periodic_z=False,
+    bx,
+    by,
+    bz,
+    x,
+    y,
+    z,
+    seeds=[[0.0, 0.0, 0.8]],
+    ds=0.01,
+    max_steps=4000,
+    method="rk45",
+    periodic_x=False,
+    periodic_y=False,
+    periodic_z=False,
 )
 
 xline, yline, zline, arc = result.get_line(0)

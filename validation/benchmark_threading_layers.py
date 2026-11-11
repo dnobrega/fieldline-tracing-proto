@@ -6,9 +6,9 @@ No global thread-layer settings are changed. Each backend has fresh workers.
 import argparse
 import json
 import os
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -104,7 +104,9 @@ def main():
         choices=["omp", "tbb", "workqueue"],
         default=["omp", "tbb"],
     )
-    parser.add_argument("--out", type=Path, default=ROOT / "validation/output/threading")
+    parser.add_argument(
+        "--out", type=Path, default=ROOT / "validation/output/threading"
+    )
     # All remaining controls are passed unchanged to the field benchmark.
     args, controls = parser.parse_known_args()
     if len(set(args.layers)) != len(args.layers):

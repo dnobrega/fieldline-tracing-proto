@@ -20,9 +20,11 @@ bz = dd.get_var("b_z", snap, center=True)
 
 # Keep original axes for nullfinder_proto.
 # In this reader z= selects physical Mm; iz= selects public grid indices.
-zsub = dd.get_z(z=slice(4,20))
-bsub = [dd.get_var(name, snap, z=slice(4,20), center=True)
-        for name in ("b_x", "b_y", "b_z")]
+zsub = dd.get_z(z=slice(4, 20))
+bsub = [
+    dd.get_var(name, snap, z=slice(4, 20), center=True)
+    for name in ("b_x", "b_y", "b_z")
+]
 res = nf.find_magnetic_nulls(*bsub, xx, yy, zsub, classify=True)
 
 # Keep these XYZ cubes for tracing and scalar sampling.
@@ -35,10 +37,10 @@ import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 
 nulls = np.asarray(res["pos"], dtype=np.float64)
-values = np.column_stack([
-    RegularGridInterpolator((xx,yy,zz), a)(nulls) for a in (bx,by,bz)
-])
-print("Independent residual:", np.linalg.norm(values,axis=1))
+values = np.column_stack(
+    [RegularGridInterpolator((xx, yy, zz), a)(nulls) for a in (bx, by, bz)]
+)
+print("Independent residual:", np.linalg.norm(values, axis=1))
 print("Null-finder residual:", res["bnorm"])
 ```
 
@@ -57,25 +59,36 @@ or fan, which require the Jacobian's local invariant directions/subspace.
 ```python
 null = nulls[0]
 widths = []
-for grid, value in zip((xx,yy,zz), null):
-    j = np.clip(np.searchsorted(grid,value,side="right")-1, 0, len(grid)-2)
-    widths.append(grid[j+1]-grid[j])
-radius = 0.05*min(widths)  # Initial trial radius; test convergence.
+for grid, value in zip((xx, yy, zz), null):
+    j = np.clip(np.searchsorted(grid, value, side="right") - 1, 0, len(grid) - 2)
+    widths.append(grid[j + 1] - grid[j])
+radius = 0.05 * min(widths)  # Initial trial radius; test convergence.
 i = np.arange(64)
-u = 1-2*(i+0.5)/len(i)
-phi = np.pi*(3-np.sqrt(5))*i
-r = np.sqrt(1-u*u)
-seeds = null + radius*np.column_stack((r*np.cos(phi),r*np.sin(phi),u))
+u = 1 - 2 * (i + 0.5) / len(i)
+phi = np.pi * (3 - np.sqrt(5)) * i
+r = np.sqrt(1 - u * u)
+seeds = null + radius * np.column_stack((r * np.cos(phi), r * np.sin(phi), u))
 
-spacing = min(np.min(np.diff(g)) for g in (xx,yy,zz))
+spacing = min(np.min(np.diff(g)) for g in (xx, yy, zz))
 result = trace_field_lines(
-    bx, by, bz, xx, yy, zz, seeds,
-    ds=0.2*spacing, max_steps=20000, method="rk45",
-    max_length=2*max(np.ptp(g) for g in (xx,yy,zz)),
-    rtol=1e-7, atol=1e-9*spacing, dtype=np.float64,
-    periodic_x=True, periodic_y=True, periodic_z=False,
+    bx,
+    by,
+    bz,
+    xx,
+    yy,
+    zz,
+    seeds,
+    ds=0.2 * spacing,
+    max_steps=20000,
+    method="rk45",
+    max_length=2 * max(np.ptp(g) for g in (xx, yy, zz)),
+    rtol=1e-7,
+    atol=1e-9 * spacing,
+    dtype=np.float64,
+    periodic_x=True,
+    periodic_y=True,
+    periodic_z=False,
 )  # Default max_step limits RK45 to local mesh spacing.
-
 ```
 
 Ensure displaced seeds are in the intended domain and above the weak-field

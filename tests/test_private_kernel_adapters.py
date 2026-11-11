@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from fieldline_tracing_proto import tracing as T
 
 

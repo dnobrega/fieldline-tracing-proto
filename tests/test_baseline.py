@@ -5,17 +5,17 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
+from fieldline_tracing_proto.diagnostics import compute_line_diagnostics
+from fieldline_tracing_proto.sampling import (
+    sample_ragged_to_padded,
+    sample_scalar_on_lines,
+)
 from fieldline_tracing_proto.tracing import (
-    trace_field_lines,
+    load_trace_npz,
     ragged_to_padded,
     save_trace_npz,
-    load_trace_npz,
+    trace_field_lines,
 )
-from fieldline_tracing_proto.sampling import (
-    sample_scalar_on_lines,
-    sample_ragged_to_padded,
-)
-from fieldline_tracing_proto.diagnostics import compute_line_diagnostics
 from fieldline_tracing_proto.winding import compute_local_winding
 
 

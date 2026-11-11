@@ -1,8 +1,10 @@
 """Regressions for boundary starts, step controls, and arc limits."""
 
 import json
+
 import numpy as np
 import pytest
+
 from fieldline_tracing_proto import trace_field_lines
 
 

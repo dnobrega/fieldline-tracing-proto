@@ -8,21 +8,22 @@ import gc
 import hashlib
 import json
 import os
-from pathlib import Path
 import platform
 import resource
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 os.environ.setdefault("NUMBA_NUM_THREADS", "2")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / "src")]
 import numba
 import numpy as np
-from fieldline_tracing_proto import trace_field_lines, __version__
+
+from fieldline_tracing_proto import __version__, trace_field_lines
 from validation.olshevsky.field import create_grid, olshevsky2020_field
-from validation.olshevsky.reference import make_seeds, compare_reference, field_at
+from validation.olshevsky.reference import compare_reference, field_at, make_seeds
 
 
 def peak_mib():

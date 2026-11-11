@@ -9,8 +9,8 @@ plane. They are not projected or plane-confined 3-D RK field lines when
 By != 0. The null marker is its x/z projection onto the nearest Y plane.
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.colors import LogNorm
 from scipy.interpolate import RegularGridInterpolator
 

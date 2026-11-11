@@ -6,9 +6,9 @@ from typing import get_type_hints
 import numpy as np
 import pytest
 
-from fieldline_tracing_proto.tracing import trace_field_lines
-from fieldline_tracing_proto.sampling import sample_scalar_on_lines
 from fieldline_tracing_proto.diagnostics import compute_line_diagnostics
+from fieldline_tracing_proto.sampling import sample_scalar_on_lines
+from fieldline_tracing_proto.tracing import trace_field_lines
 
 
 def trace(**overrides):

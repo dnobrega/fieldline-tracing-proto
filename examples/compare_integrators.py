@@ -4,13 +4,14 @@ Run from the project root:
     .venv/bin/python examples/compare_integrators.py
 """
 
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import numpy as np
+
 from fieldline_tracing_proto.tracing import trace_field_lines
 
 

@@ -9,19 +9,18 @@ from dataclasses import dataclass
 import numpy as np
 from numba import njit, prange
 
-from .tracing import TraceResult
-
 from .grid import (
     EXIT_NAN,
-    validate_cartesian_grid,
-    is_uniform_grid,
-    _inv_spacing,
-    _interpolation_stencil,
     _apply_stencil,
+    _interpolation_stencil,
+    _inv_spacing,
+    is_uniform_grid,
+    lookup_table,
     prepare_array,
     prepare_periods,
-    lookup_table,
+    validate_cartesian_grid,
 )
+from .tracing import TraceResult
 
 
 @dataclass
@@ -91,7 +90,8 @@ def sample_scalar_on_lines(
     intentional. Positions and grids are always evaluated in float64.
     Legacy NPZ settings without explicit periods use repeated endpoints.
     """
-    import json, warnings
+    import json
+    import warnings
 
     settings = json.loads(getattr(result, "settings_json", "{}"))
     flags = []

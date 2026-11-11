@@ -8,9 +8,9 @@ import csv
 import hashlib
 import json
 import os
-from pathlib import Path
 import platform
 import sys
+from pathlib import Path
 
 os.environ.setdefault("NUMBA_NUM_THREADS", "2")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -20,6 +20,7 @@ import numpy as np
 import scipy
 from scipy.integrate import quad
 from scipy.optimize import brentq
+
 from fieldline_tracing_proto.tracing import trace_field_lines
 
 
@@ -425,6 +426,8 @@ open validation tasks.
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--output-dir", type=Path, default=Path(__file__).resolve().parent / "output" / "boundaries"
+        "--output-dir",
+        type=Path,
+        default=Path(__file__).resolve().parent / "output" / "boundaries",
     )
     generate_report(parser.parse_args().output_dir)
