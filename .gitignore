@@ -14,4 +14,3 @@ dist/
 htmlcov/
 .ruff_cache/
 validation/output/
-arcade.png

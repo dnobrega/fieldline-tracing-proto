@@ -1,7 +1,8 @@
 # High-resolution tracing on the Olshevsky 14-null field
 
-This repository-only benchmark samples the analytic field used by nullfinder-proto.
-It does not add SciPy or nullfinder to the tracing package's runtime dependencies.
+This repository-only benchmark samples the analytic field of Olshevsky et al. (2020)
+as implemented in [nullfinder-proto](https://github.com/dnobrega/nullfinder-proto).
+It does not add SciPy or nullfinder-proto to the tracing package's runtime dependencies.
 Run from the source checkout with NumPy, Numba and SciPy installed.
 
 ## Reproduce
@@ -109,14 +110,21 @@ isolated measurement of solver allocations. macOS/Linux RSS units are normalized
 
 ## Fixture provenance
 
-`field.py` was copied from
-`nullfinder-proto/benchmarks/olshevsky2020_field.py` on 2026-11-09.
+`field.py` was copied from `benchmarks/olshevsky2020_field.py` in
+[nullfinder-proto](https://github.com/dnobrega/nullfinder-proto) on 2026-11-09.
 It implements Eq. A.1, Table A.1 and the rounded Table A.2 positions described
 there as Olshevsky et al. (2020), Appendix A. Its two documented corrections
-(Y2=0.117 and the By constant sqrt(30)/7) are retained. The only compatibility
-edit removes `zip(strict=True)` after the existing exact-length validation, so
-preallocated filling also works on Python 3.9. The upstream BSD-3-Clause license
+(Y2=0.117 and the By constant sqrt(30)/7) are retained. The only
+edit removes `zip(strict=True)` after the existing exact-length validation; it
+does not change the sampled values. The upstream BSD-3-Clause license
 and copyright are preserved in [LICENSE.md](LICENSE.md). `provenance.json`
 records original/local file hashes. The direct point evaluator uses the same
 formula/parameters in a separate implementation; it is independent of gridded
 interpolation, but is not an independent verification of the published formula.
+
+## Reference
+
+Olshevsky, V., Pontin, D. I., Williams, B., Parnell, C. E., Fu, H. S., Liu, Y.,
+Yao, S., & Khotyaintsev, Y. V. 2020, A comparison of methods for finding magnetic
+nulls in simulations and in situ observations of space plasmas, A&A, 644, A150,
+[doi:10.1051/0004-6361/202039182](https://doi.org/10.1051/0004-6361/202039182)

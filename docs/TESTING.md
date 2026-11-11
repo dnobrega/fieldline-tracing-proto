@@ -1,6 +1,6 @@
 # Testing and reproducibility
 
-From a source checkout, install `python -m pip install -e ".[test,plot]"`
+From a source checkout, install `python -m pip install -e ".[test]"`
 and run `python -m pytest -q`. Tests default to two Numba threads. The suite
 covers both methods, nonuniform grids, XYZ memory layouts, periodic seams,
 boundary events, storage modes, sampling, diagnostics, and saved results.
@@ -16,5 +16,8 @@ fixtures used by the tests.
 After changing numerical helpers, run in a fresh process with a new writable
 `NUMBA_CACHE_DIR`. For throughput measurements, warm up a representative
 dtype, array layout and set of options. Record package versions, controls,
-threading layer, and output sizes alongside timing results. See the
+threading layer, and output sizes alongside timing results.
+On Linux x86-64, Numba 0.66–0.68 (LLVM 22) ran the tracer 20–45 % slower
+than Numba 0.65.1 (LLVM 20), with bit-identical results; arm64 was not
+measured. Pin `numba==0.65.1` when throughput matters. See the
 [reproducible studies](../validation/README.md).

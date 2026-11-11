@@ -9,5 +9,5 @@ First public version of Fieldline Tracing Proto.
   projection of resolved endpoints onto open faces.
 - Boundary handling for tangent seeds and shallow returns, ragged traces,
   scalar sampling, line diagnostics, and relative winding.
-- A standalone arcade example, Bifrost documentation, and analytic validation
-  scripts including the Olshevsky 14-null field.
+- An RK2/RK45 comparison example and analytic validation scripts, including
+  the Olshevsky et al. (2020) 14-null field.

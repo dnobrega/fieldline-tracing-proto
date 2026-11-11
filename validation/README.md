@@ -20,6 +20,6 @@ NUMBA_NUM_THREADS=2 python validation/benchmark_olshevsky.py \
 ```
 
 See [the fixture guide](olshevsky/README.md) for the field definition,
-provenance, and memory requirements. For a Bifrost snapshot, record the reader
+provenance, and memory requirements. For a simulation snapshot, record the reader
 version, centering, grid axes and periods, seed set, field precision, integration
 controls, and endpoint codes before comparing trajectories.

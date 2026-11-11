@@ -11,9 +11,9 @@ Centre for Solar Physics, University of Oslo).
 **Contributors:**
 
 - Fernando Moreno-Insertis (Instituto de Astrofísica de Canarias; Universidad de
-  La Laguna).
-- Claude Opus 5.5 (Anthropic), AI assistant: code review, bug fixes, testing,
-  packaging and documentation.
+  La Laguna): scientific discussions.
+- Claude (Anthropic), AI assistant: code review, reproduction tests and
+  benchmarks, performance prototyping.
 - ChatGPT (OpenAI), AI assistant: algorithm development, numerical optimization,
   code review and documentation.
 

@@ -6,7 +6,7 @@ extras:
 ```sh
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[test,plot]"
+python -m pip install -e ".[test]"
 python -m pytest -q
 ```
 
@@ -20,6 +20,6 @@ helpers. Numba can reuse a compiled caller after an imported helper changes.
 Measure warm performance separately from the first call. For benchmark
 instructions see [validation](validation/README.md).
 
-Before packaging, check the wheel from outside the checkout and run the
-standalone plotting example. Keep generated reports and local environments
+Before packaging, check the wheel from outside the checkout and run
+`examples/compare_integrators.py`. Keep generated reports and local environments
 out of commits.
