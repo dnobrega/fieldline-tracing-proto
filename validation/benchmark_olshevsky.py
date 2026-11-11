@@ -96,21 +96,21 @@ def worker(args):
     for label, seeds, method, threads in cases:
         numba.set_num_threads(threads)
         ds = args.ds if args.ds is not None else 0.2 * h
-        kwargs = dict(
-            ds=ds,
-            max_steps=args.max_steps,
-            max_length=args.length,
-            method=method,
-            dtype=dtype,
-            save_stride=args.save_stride,
-            periodic_x=False,
-            periodic_y=False,
-            periodic_z=False,
-            storage=args.storage,
-            memory_limit_mb=args.memory_limit_mb,
-            array_order="K",
-            bmin=1e-12,
-        )
+        kwargs = {
+            "ds": ds,
+            "max_steps": args.max_steps,
+            "max_length": args.length,
+            "method": method,
+            "dtype": dtype,
+            "save_stride": args.save_stride,
+            "periodic_x": False,
+            "periodic_y": False,
+            "periodic_z": False,
+            "storage": args.storage,
+            "memory_limit_mb": args.memory_limit_mb,
+            "array_order": "K",
+            "bmin": 1e-12,
+        }
         if method == "rk45":
             kwargs.update(
                 rtol=args.rtol, atol=args.atol, max_step=h * args.max_step_cells
@@ -118,7 +118,7 @@ def worker(args):
         if args.buffer_points is not None:
             kwargs["buffer_points"] = args.buffer_points
 
-        def solve():
+        def solve(seeds=seeds, kwargs=kwargs):
             return trace_field_lines(*fields, grid, grid, grid, seeds, **kwargs)
 
         t = time.perf_counter()
@@ -207,12 +207,12 @@ def worker(args):
                 )
             },
             nonstandard_terminations=[
-                dict(
-                    seed_index=int(i),
-                    direction=direction,
-                    code=int(codes[i]),
-                    endpoint=getattr(result, "endpoints_" + direction)[i].tolist(),
-                )
+                {
+                    "seed_index": int(i),
+                    "direction": direction,
+                    "code": int(codes[i]),
+                    "endpoint": getattr(result, "endpoints_" + direction)[i].tolist(),
+                }
                 for direction in ("minus", "plus")
                 for codes in (getattr(result, "exit_code_" + direction),)
                 for i in np.flatnonzero((np.abs(codes) >= 7) & (np.abs(codes) != 11))
@@ -255,34 +255,34 @@ def worker(args):
             flush=True,
         )
         del result
-    info = dict(
-        version=__version__,
-        python=platform.python_version(),
-        numpy=np.__version__,
-        numba=numba.__version__,
-        platform=platform.platform(),
-        logical_cpus=os.cpu_count(),
-        threading_layer=numba.threading_layer(),
-        numba_cache_dir=os.environ.get("NUMBA_CACHE_DIR"),
-        field_gib=field_gib,
-        baseline_worker_peak_mib=baseline_peak,
-        generation_peak_mib=generation_peak,
-        worker_peak_including_reference_mib=peak_mib(),
-        generator_first_seconds=generator_first,
-        field_allocation_and_generation_seconds=generation,
-        seeds_sha256={
+    info = {
+        "version": __version__,
+        "python": platform.python_version(),
+        "numpy": np.__version__,
+        "numba": numba.__version__,
+        "platform": platform.platform(),
+        "logical_cpus": os.cpu_count(),
+        "threading_layer": numba.threading_layer(),
+        "numba_cache_dir": os.environ.get("NUMBA_CACHE_DIR"),
+        "field_gib": field_gib,
+        "baseline_worker_peak_mib": baseline_peak,
+        "generation_peak_mib": generation_peak,
+        "worker_peak_including_reference_mib": peak_mib(),
+        "generator_first_seconds": generator_first,
+        "field_allocation_and_generation_seconds": generation,
+        "seeds_sha256": {
             label: hashlib.sha256(s.tobytes()).hexdigest() for label, s in populations
         },
-        analytic_roots=roots.tolist(),
-        analytic_root_residuals=[float(np.linalg.norm(field_at(p))) for p in roots],
-        configuration={
+        "analytic_roots": roots.tolist(),
+        "analytic_root_residuals": [float(np.linalg.norm(field_at(p))) for p in roots],
+        "configuration": {
             k: str(v) if isinstance(v, Path) else v
             for k, v in vars(args).items()
             if k not in ("worker", "worker_json")
         },
-        source_sha256=hashes(),
-    )
-    return dict(environment=info, cases=rows)
+        "source_sha256": hashes(),
+    }
+    return {"environment": info, "cases": rows}
 
 
 def report(out, documents):

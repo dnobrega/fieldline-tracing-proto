@@ -31,7 +31,7 @@ def test_non_cubic_xyz_affine_field_and_scalar(order, method, dtype):
     fields = [np.array(a, dtype=dtype, order=order) for a in (-Y, X, Z * 0 + 0.3)]
     for a in fields:
         assert np.shares_memory(prepare_array(a, a.dtype), a)
-    kwargs = dict(max_length=0.5, rtol=1e-9) if method == "rk45" else {}
+    kwargs = {"max_length": 0.5, "rtol": 1e-9} if method == "rk45" else {}
     r = trace_field_lines(
         *fields,
         x,
@@ -86,7 +86,7 @@ def test_endpoint_excluded_periodic_seam_and_one_period(order):
     x = np.arange(32) / 32
     y = np.array([0.0, 0.4, 1.0])
     z = np.array([0.0, 1.0])
-    X, Y, Z = np.meshgrid(x, y, z, indexing="ij")
+    X, _Y, _Z = np.meshgrid(x, y, z, indexing="ij")
     a = np.array(np.ones_like(X), order=order)
     r = trace_field_lines(
         a,
@@ -128,7 +128,7 @@ def test_endpoint_excluded_periodic_seam_and_one_period(order):
 def test_periodic_sheared_field_has_no_secular_drift():
     x = np.arange(64) / 64
     g = np.array([0.0, 1.0])
-    X, Y, Z = np.meshgrid(x, g, g, indexing="ij")
+    X, _Y, _Z = np.meshgrid(x, g, g, indexing="ij")
     r = trace_field_lines(
         X * 0 + 1,
         X * 0,
@@ -174,7 +174,7 @@ def test_default_grid_step_cap_detects_a_one_cell_structure():
     x = np.linspace(0, 20, 401)
     y = np.array([0.0, 1.0])
     z = np.array([-1.0, 1.0])
-    X, Y, Z = np.meshgrid(x, y, z, indexing="ij")
+    X, _Y, _Z = np.meshgrid(x, y, z, indexing="ij")
     bz = np.exp(-(((X - 15) / 0.05) ** 2))
     r = trace_field_lines(
         X * 0 + 1,
@@ -315,9 +315,13 @@ def test_single_and_two_pass_and_seed_permutation_match():
     x = np.linspace(-2, 2, 9)
     X, Y, Z = np.meshgrid(x, x, x, indexing="ij")
     seeds = np.array([[1.0, 0.0, 0.0], [0.7, 0.3, 0.1], [0.5, 0.8, 0.0]])
-    kwargs = dict(
-        method="rk45", max_length=0.7, save_stride=3, periodic_x=False, periodic_y=False
-    )
+    kwargs = {
+        "method": "rk45",
+        "max_length": 0.7,
+        "save_stride": 3,
+        "periodic_x": False,
+        "periodic_y": False,
+    }
     results = [
         trace_field_lines(
             -Y,
@@ -431,9 +435,12 @@ def test_periodic_winding_on_continuous_cover_and_sparse_rejection():
     y = np.linspace(0, 1, 3)
     z = np.linspace(-1, 1, 5)
     a = np.ones((16, 3, 5))
-    kwargs = dict(
-        method="rk45", max_length=2.0, periodic_y=False, period=(1.0, 0.0, 0.0)
-    )
+    kwargs = {
+        "method": "rk45",
+        "max_length": 2.0,
+        "periodic_y": False,
+        "period": (1.0, 0.0, 0.0),
+    }
     seeds = np.array([[0.99, 0.3, 0.0], [0.01, 0.4, 0.0]])
     r = trace_field_lines(
         a, a * 0, a * 0, x, y, z, seeds, 0.05, 1000, wrap_output=False, **kwargs

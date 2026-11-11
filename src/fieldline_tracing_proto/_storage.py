@@ -105,17 +105,17 @@ def integrate_storage(
         or rowbytes > budget
         or (storage == "auto" and budget // rowbytes < minimum)
     )
-    info = dict(
-        storage="two_pass" if exact else "single_pass",
-        num_threads=threads,
-        buffer_points=None if buffer_points is None else int(buffer_points),
-        block_size=None if block_size is None else int(block_size),
-        effective_block_size=0,
-        buffer_capacity_peak=0,
-        peak_branch_buffer_bytes=0,
-        overflow_retraced=0,
-        work_nfev=0,
-    )
+    info = {
+        "storage": "two_pass" if exact else "single_pass",
+        "num_threads": threads,
+        "buffer_points": None if buffer_points is None else int(buffer_points),
+        "block_size": None if block_size is None else int(block_size),
+        "effective_block_size": 0,
+        "buffer_capacity_peak": 0,
+        "peak_branch_buffer_bytes": 0,
+        "overflow_retraced": 0,
+        "work_nfev": 0,
+    }
     if not n:
         return (
             np.empty((0, 2), dtype=np.int64),

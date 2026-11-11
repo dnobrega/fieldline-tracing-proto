@@ -87,7 +87,7 @@ def test_tangent_node_uses_the_cell_of_each_branch(method, side, dtype, nonunifo
         if nonuniform
         else np.linspace(-1, 1, 9)
     )
-    X, Y, Z = np.meshgrid(g, g, g, indexing="ij")
+    X, _Y, _Z = np.meshgrid(g, g, g, indexing="ij")
     fields = tuple(a.astype(dtype) for a in (X * 0 + 1, X * 0, side * np.abs(X)))
     r = trace(fields, g, [0, 0, side], method, max_length=0.2)
     assert r.exit_code_plus[0] == (2 if side > 0 else 1)
@@ -182,7 +182,7 @@ def test_genuinely_earlier_face_is_not_promoted_to_arc_limit(method):
 @pytest.mark.parametrize("side", [-1, 1])
 def test_tangent_curvature_uses_the_periodic_seam_cell(method, side):
     g = np.linspace(-1, 1, 9)
-    X, Y, Z = np.meshgrid(g, g, g, indexing="ij")
+    X, _Y, _Z = np.meshgrid(g, g, g, indexing="ij")
     r = trace_field_lines(
         X * 0 + 1,
         X * 0,

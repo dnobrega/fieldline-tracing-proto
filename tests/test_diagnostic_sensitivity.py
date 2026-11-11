@@ -34,10 +34,10 @@ def test_refining_output_resolves_scalar_peak_and_discrete_width(method):
     reference = scalar_reference()
     if method == "rk2":
         fine, fine_diag = scalar_case(method, stride=1)
-        coarse, coarse_diag = scalar_case(method, stride=128)
+        _coarse, coarse_diag = scalar_case(method, stride=128)
     else:
         fine, fine_diag = scalar_case(method, max_step=1 / 256)
-        coarse, coarse_diag = scalar_case(method, max_step=1 / 16)
+        _coarse, coarse_diag = scalar_case(method, max_step=1 / 16)
     assert fine_diag.integral[0] == pytest.approx(reference["integral"], rel=1e-8)
     assert fine_diag.max_abs[0] == pytest.approx(1.0, abs=1e-12)
     assert abs(coarse_diag.max_abs[0] - 1.0) > 0.3
@@ -75,15 +75,15 @@ def test_calibrated_configurations_meet_budget_on_new_seed_phases(field, method)
 def test_benchmark_worker_reports_checked_accuracy_and_distinct_memory_measures():
     controls, _ = calibrate("circle", 1e-4, "rk45")
     result = worker(
-        dict(
-            field="circle",
-            target=1e-4,
-            method="rk45",
-            nseeds=3,
-            controls=controls,
-            periodic=False,
-            repeats=3,
-        )
+        {
+            "field": "circle",
+            "target": 1e-4,
+            "method": "rk45",
+            "nseeds": 3,
+            "controls": controls,
+            "periodic": False,
+            "repeats": 3,
+        }
     )
     assert result["measured_max_error"] <= 1e-4
     assert result["saved_points"] > 3
@@ -99,13 +99,13 @@ def test_benchmark_worker_reports_checked_accuracy_and_distinct_memory_measures(
 def test_benchmark_worker_rejects_a_configuration_outside_error_budget():
     with pytest.raises(RuntimeError, match="failed its error budget"):
         worker(
-            dict(
-                field="circle",
-                target=1e-10,
-                method="rk2",
-                nseeds=2,
-                controls=dict(ds=0.5, max_steps=4),
-                periodic=False,
-                repeats=3,
-            )
+            {
+                "field": "circle",
+                "target": 1e-10,
+                "method": "rk2",
+                "nseeds": 2,
+                "controls": {"ds": 0.5, "max_steps": 4},
+                "periodic": False,
+                "repeats": 3,
+            }
         )

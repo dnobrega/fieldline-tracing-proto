@@ -25,13 +25,13 @@ def test_overflow_recovery_keeps_exact_faces_and_all_branch_metadata(
     g = np.array([0.0, 0.2, 0.5, 1.0, 2.0])
     a = np.ones((5, 5, 5), dtype=dtype)
     seeds = np.array([[0.5, 0.6, 0.01], [0.5, 0.6, 0.5], [0.5, 0.6, 1.9]])
-    kw = dict(
-        method=method,
-        max_length=3.0,
-        save_stride=stride,
-        periodic_x=False,
-        periodic_y=False,
-    )
+    kw = {
+        "method": method,
+        "max_length": 3.0,
+        "save_stride": stride,
+        "periodic_x": False,
+        "periodic_y": False,
+    }
     r = trace_field_lines(
         a * 0,
         a * 0,
@@ -142,7 +142,7 @@ def test_learning_switches_to_exact_storage_when_large_rows_cannot_keep_parallel
     g = np.array([-20.0, 20.0])
     a = np.ones((2, 2, 2))
     seeds = np.zeros((16, 3))
-    kw = dict(max_length=2.0, periodic_x=False, periodic_y=False)
+    kw = {"max_length": 2.0, "periodic_x": False, "periodic_y": False}
     r = trace_field_lines(
         a * 0,
         a * 0,
@@ -191,7 +191,7 @@ def test_invalid_cell_cap_rejected(value):
 def test_cell_cap_and_absolute_cap_are_unambiguous():
     g = np.linspace(-2, 2, 33)
     a = np.ones((33, 33, 33))
-    kw = dict(method="rk45", max_length=1.0, periodic_x=False, periodic_y=False)
+    kw = {"method": "rk45", "max_length": 1.0, "periodic_x": False, "periodic_y": False}
     small = trace_field_lines(
         a * 0, a * 0, a, g, g, g, [[0, 0, 0]], 0.01, 1000, max_step_cells=0.5, **kw
     )

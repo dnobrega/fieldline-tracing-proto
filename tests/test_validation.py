@@ -14,18 +14,18 @@ from fieldline_tracing_proto.tracing import trace_field_lines
 def trace(**overrides):
     grid = np.array([-1.0, 0.0, 1.0])
     zeros = np.zeros((3, 3, 3))
-    options = dict(
-        bx=zeros,
-        by=zeros,
-        bz=zeros + 1,
-        xgrid=grid,
-        ygrid=grid,
-        zgrid=grid,
-        seeds=np.zeros((1, 3)),
-        ds=0.1,
-        max_steps=3,
-        dtype=np.float64,
-    )
+    options = {
+        "bx": zeros,
+        "by": zeros,
+        "bz": zeros + 1,
+        "xgrid": grid,
+        "ygrid": grid,
+        "zgrid": grid,
+        "seeds": np.zeros((1, 3)),
+        "ds": 0.1,
+        "max_steps": 3,
+        "dtype": np.float64,
+    }
     options.update(overrides)
     return trace_field_lines(**options, periodic_convention="endpoint_included")
 

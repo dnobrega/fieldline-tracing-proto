@@ -150,8 +150,9 @@ def trace_field_lines(
         raise ValueError("method must be 'rk2' or 'rk45'.")
     if isinstance(ds, np.ndarray) and ds.ndim == 0:
         ds = ds.item()
+    # Keep the exception type used for invalid tracing options.
     if isinstance(ds, (bool, np.bool_)) or not isinstance(ds, Real):
-        raise ValueError("ds must be a finite positive real scalar.")
+        raise ValueError("ds must be a finite positive real scalar.")  # noqa: TRY004
     try:
         ds = float(ds)
     except (OverflowError, ValueError):
@@ -315,7 +316,7 @@ def trace_field_lines(
         dtype=np.float64,
     )
     if not isinstance(warn_periodic, (bool, np.bool_)):
-        raise ValueError("warn_periodic must be boolean.")
+        raise ValueError("warn_periodic must be boolean.")  # noqa: TRY004
     raw_period = (None, None, None) if period is None else tuple(period)
     inferred = [
         name
@@ -492,17 +493,17 @@ def exit_code_meaning(code: int) -> str:
 
 # Private aliases retain the developer inspection entry points.
 from ._kernels import (
-    _branch as _branch,
+    _branch as _branch,  # noqa: PLC0414
 )
 from ._kernels import (
-    _rhs as _rhs,
+    _rhs as _rhs,  # noqa: PLC0414
 )
 from ._kernels import (
-    _rhs_xyz as _rhs_xyz,
+    _rhs_xyz as _rhs_xyz,  # noqa: PLC0414
 )
 from ._kernels import (
-    _rk2_trial as _rk2_trial,
+    _rk2_trial as _rk2_trial,  # noqa: PLC0414
 )
 from ._kernels import (
-    _rk45_trial as _rk45_trial,
+    _rk45_trial as _rk45_trial,  # noqa: PLC0414
 )

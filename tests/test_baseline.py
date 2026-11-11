@@ -206,7 +206,7 @@ def test_nonfinite_field_termination(invalid):
 def test_existing_parameter_guards(option, value):
     grid = np.linspace(-1.0, 1.0, 3)
     zeros = np.zeros((3, 3, 3))
-    options = dict(ds=0.1, max_steps=10, save_stride=1)
+    options = {"ds": 0.1, "max_steps": 10, "save_stride": 1}
     options[option] = value
     with pytest.raises(ValueError):
         trace_field_lines(
@@ -260,7 +260,7 @@ def test_fractional_step_budget_rejected():
 
 def test_midpoint_second_order_on_circle():
     grid = np.linspace(-2.0, 2.0, 9)
-    x, y, z = np.meshgrid(grid, grid, grid, indexing="ij")
+    x, y, _z = np.meshgrid(grid, grid, grid, indexing="ij")
     errors = []
     for n in (10, 20, 40):
         result = trace_field_lines(

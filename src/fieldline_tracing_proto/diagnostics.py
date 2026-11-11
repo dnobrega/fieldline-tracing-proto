@@ -170,11 +170,7 @@ def _point_is_valid(values_all, codes_all, use_codes, idx):
     if use_codes and codes_all[idx] != 0:
         return False
 
-    v = values_all[idx]
-    if not np.isfinite(v):
-        return False
-
-    return True
+    return np.isfinite(values_all[idx])
 
 
 @njit(cache=True)

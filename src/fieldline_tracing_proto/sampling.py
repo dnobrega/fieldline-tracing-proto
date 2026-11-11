@@ -116,11 +116,12 @@ def sample_scalar_on_lines(
             (p if p > 0 else None) if flags[i] else 0.0
             for i, p in enumerate(settings["period"])
         ]
-    elif period is not None and "period" in settings:
-        if tuple(0.0 if p is None else p for p in period) != tuple(settings["period"]):
-            warnings.warn(
-                "period differs from trace metadata.", UserWarning, stacklevel=2
-            )
+    elif (
+        period is not None
+        and "period" in settings
+        and tuple(0.0 if p is None else p for p in period) != tuple(settings["period"])
+    ):
+        warnings.warn("period differs from trace metadata.", UserWarning, stacklevel=2)
     convention = periodic_convention or settings.get(
         "periodic_convention", "endpoint_included" if settings else "endpoint_excluded"
     )
@@ -151,7 +152,8 @@ def sample_scalar_on_lines(
     values = np.empty(len(result.xfl), dtype=dtype)
     codes = np.empty(len(result.xfl), dtype=np.int16)
     if not isinstance(exact_anchors, (bool, np.bool_)):
-        raise ValueError("exact_anchors must be boolean.")
+        # Keep the exception type used for invalid sampling options.
+        raise ValueError("exact_anchors must be boolean.")  # noqa: TRY004
     seed_points = getattr(result, "seeds", None)
     seed_index = getattr(result, "seed_index", None)
     restore = bool(

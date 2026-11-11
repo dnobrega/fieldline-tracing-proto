@@ -32,7 +32,7 @@ LENGTH = 2.0
 
 def geometry(field, nseeds):
     grid = np.linspace(-3.0, 3.0, 17)
-    x, y, z = np.meshgrid(grid, grid, grid, indexing="ij")
+    x, y, _z = np.meshgrid(grid, grid, grid, indexing="ij")
     phase = np.linspace(0.0, 2 * np.pi, nseeds, endpoint=False)
     seeds = np.column_stack([np.cos(phase), np.sin(phase), np.zeros(nseeds)])
     bz = np.zeros_like(x) if field == "circle" else np.full_like(x, 0.5)
@@ -75,19 +75,19 @@ def calibrate(field, target, method):
     data = geometry(field, 16)
     if method == "rk2":
         candidates = [
-            dict(ds=LENGTH / n, max_steps=n)
+            {"ds": LENGTH / n, "max_steps": n}
             for n in (16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384)
         ]
     else:
         candidates = [
-            dict(
-                method="rk45",
-                ds=0.8,
-                max_steps=20000,
-                max_length=LENGTH,
-                rtol=tol,
-                atol=tol * 0.01,
-            )
+            {
+                "method": "rk45",
+                "ds": 0.8,
+                "max_steps": 20000,
+                "max_length": LENGTH,
+                "rtol": tol,
+                "atol": tol * 0.01,
+            }
             for tol in (1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 1e-12)
         ]
     for controls in candidates:
@@ -134,38 +134,40 @@ def worker(case):
     persistent_bytes = sum(
         value.nbytes for value in vars(result).values() if isinstance(value, np.ndarray)
     )
-    return dict(
-        field=case["field"],
-        target=case["target"],
-        nseeds=case["nseeds"],
-        method=case["method"],
-        boundary_mode="periodic" if case["periodic"] else "bounded",
-        ds=case["controls"]["ds"],
-        rtol=case["controls"].get("rtol", "not-applicable"),
-        max_steps=case["controls"]["max_steps"],
-        save_stride=1,
-        measured_max_error=error,
-        saved_points=result.total_points,
-        accepted_steps_total=int(
+    return {
+        "field": case["field"],
+        "target": case["target"],
+        "nseeds": case["nseeds"],
+        "method": case["method"],
+        "boundary_mode": "periodic" if case["periodic"] else "bounded",
+        "ds": case["controls"]["ds"],
+        "rtol": case["controls"].get("rtol", "not-applicable"),
+        "max_steps": case["controls"]["max_steps"],
+        "save_stride": 1,
+        "measured_max_error": error,
+        "saved_points": result.total_points,
+        "accepted_steps_total": int(
             np.sum(result.nsteps_minus) + np.sum(result.nsteps_plus)
         ),
-        rejected_trials_total=int(
+        "rejected_trials_total": int(
             np.sum(result.nrejected_minus) + np.sum(result.nrejected_plus)
         ),
-        per_integration_nfev=int(np.sum(result.nfev_minus) + np.sum(result.nfev_plus)),
-        work_nfev=json.loads(result.settings_json).get("work_nfev"),
-        overflow_retraced=json.loads(result.settings_json).get("overflow_retraced"),
-        first_call_seconds=first_call,
-        repeats=case["repeats"],
-        warm_median_seconds=float(np.median(times)),
-        warm_min_seconds=min(times),
-        warm_p25_seconds=float(np.percentile(times, 25)),
-        warm_p75_seconds=float(np.percentile(times, 75)),
-        output_array_mib=persistent_bytes / 1024**2,
-        worker_peak_rss_before_first_call_mib=baseline_rss,
-        worker_peak_rss_through_solves_mib=peak_after_solve,
-        worker_peak_rss_including_verification_mib=peak_rss_mib(),
-    )
+        "per_integration_nfev": int(
+            np.sum(result.nfev_minus) + np.sum(result.nfev_plus)
+        ),
+        "work_nfev": json.loads(result.settings_json).get("work_nfev"),
+        "overflow_retraced": json.loads(result.settings_json).get("overflow_retraced"),
+        "first_call_seconds": first_call,
+        "repeats": case["repeats"],
+        "warm_median_seconds": float(np.median(times)),
+        "warm_min_seconds": min(times),
+        "warm_p25_seconds": float(np.percentile(times, 25)),
+        "warm_p75_seconds": float(np.percentile(times, 75)),
+        "output_array_mib": persistent_bytes / 1024**2,
+        "worker_peak_rss_before_first_call_mib": baseline_rss,
+        "worker_peak_rss_through_solves_mib": peak_after_solve,
+        "worker_peak_rss_including_verification_mib": peak_rss_mib(),
+    }
 
 
 def main(output, repeats, seed_counts):
@@ -176,37 +178,37 @@ def main(output, repeats, seed_counts):
             for method in ("rk2", "rk45"):
                 controls, error = calibrate(field, target, method)
                 calibration.append(
-                    dict(
-                        field=field,
-                        target=target,
-                        method=method,
-                        calibration_max_error=error,
-                        controls_json=json.dumps(controls, sort_keys=True),
-                    )
+                    {
+                        "field": field,
+                        "target": target,
+                        "method": method,
+                        "calibration_max_error": error,
+                        "controls_json": json.dumps(controls, sort_keys=True),
+                    }
                 )
                 for nseeds in seed_counts:
                     cases.append(
-                        dict(
-                            field=field,
-                            target=target,
-                            method=method,
-                            nseeds=nseeds,
-                            controls=controls,
-                            periodic=False,
-                            repeats=repeats,
-                        )
+                        {
+                            "field": field,
+                            "target": target,
+                            "method": method,
+                            "nseeds": nseeds,
+                            "controls": controls,
+                            "periodic": False,
+                            "repeats": repeats,
+                        }
                     )
                 if method == "rk45" and target == 1e-6:
                     cases.append(
-                        dict(
-                            field=field,
-                            target=target,
-                            method=method,
-                            nseeds=max(seed_counts),
-                            controls=controls,
-                            periodic=True,
-                            repeats=repeats,
-                        )
+                        {
+                            "field": field,
+                            "target": target,
+                            "method": method,
+                            "nseeds": max(seed_counts),
+                            "controls": controls,
+                            "periodic": True,
+                            "repeats": repeats,
+                        }
                     )
     # Reproducible interleaving reduces systematic method/order bias.
     random.Random(19).shuffle(cases)
@@ -245,27 +247,27 @@ def main(output, repeats, seed_counts):
     root = Path(__file__).resolve().parents[1]
     (output / "environment.json").write_text(
         json.dumps(
-            dict(
-                version=__version__,
-                python=platform.python_version(),
-                platform=platform.platform(),
-                machine=platform.machine(),
-                numpy=np.__version__,
-                numba=numba.__version__,
-                threads=numba.get_num_threads(),
-                dtype="float64",
-                field_shape=[17, 17, 17],
-                branch_length=LENGTH,
-                repeats=repeats,
-                seed_counts=seed_counts,
-                source_sha256={
+            {
+                "version": __version__,
+                "python": platform.python_version(),
+                "platform": platform.platform(),
+                "machine": platform.machine(),
+                "numpy": np.__version__,
+                "numba": numba.__version__,
+                "threads": numba.get_num_threads(),
+                "dtype": "float64",
+                "field_shape": [17, 17, 17],
+                "branch_length": LENGTH,
+                "repeats": repeats,
+                "seed_counts": seed_counts,
+                "source_sha256": {
                     str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
                     for p in [
                         Path(__file__).resolve(),
                         *sorted((root / "src").rglob("*.py")),
                     ]
                 },
-            ),
+            },
             indent=2,
         )
         + "\n"
@@ -292,23 +294,25 @@ def main(output, repeats, seed_counts):
                     and r["boundary_mode"] == "bounded"
                 )
                 pairs.append(
-                    dict(
-                        field=field,
-                        target=target,
-                        nseeds=nseeds,
-                        rk2_error=a["measured_max_error"],
-                        rk45_error=b["measured_max_error"],
-                        rk2_seconds=a["warm_median_seconds"],
-                        rk45_seconds=b["warm_median_seconds"],
-                        rk2_time_over_rk45=a["warm_median_seconds"]
+                    {
+                        "field": field,
+                        "target": target,
+                        "nseeds": nseeds,
+                        "rk2_error": a["measured_max_error"],
+                        "rk45_error": b["measured_max_error"],
+                        "rk2_seconds": a["warm_median_seconds"],
+                        "rk45_seconds": b["warm_median_seconds"],
+                        "rk2_time_over_rk45": a["warm_median_seconds"]
                         / b["warm_median_seconds"],
-                        rk2_output_mib=a["output_array_mib"],
-                        rk45_output_mib=b["output_array_mib"],
-                        rk2_worker_peak_rss_mib=a["worker_peak_rss_through_solves_mib"],
-                        rk45_worker_peak_rss_mib=b[
+                        "rk2_output_mib": a["output_array_mib"],
+                        "rk45_output_mib": b["output_array_mib"],
+                        "rk2_worker_peak_rss_mib": a[
                             "worker_peak_rss_through_solves_mib"
                         ],
-                    )
+                        "rk45_worker_peak_rss_mib": b[
+                            "worker_peak_rss_through_solves_mib"
+                        ],
+                    }
                 )
     write_csv(output / "comparisons.csv", pairs)
     overhead = []
@@ -323,14 +327,14 @@ def main(output, repeats, seed_counts):
             and r["boundary_mode"] == "bounded"
         )
         overhead.append(
-            dict(
-                field=periodic["field"],
-                nseeds=periodic["nseeds"],
-                bounded_seconds=bounded["warm_median_seconds"],
-                periodic_seconds=periodic["warm_median_seconds"],
-                bounded_over_periodic=bounded["warm_median_seconds"]
+            {
+                "field": periodic["field"],
+                "nseeds": periodic["nseeds"],
+                "bounded_seconds": bounded["warm_median_seconds"],
+                "periodic_seconds": periodic["warm_median_seconds"],
+                "bounded_over_periodic": bounded["warm_median_seconds"]
                 / periodic["warm_median_seconds"],
-            )
+            }
         )
     report = f"""# RK2/RK45 performance at matched trajectory-error budgets ({__version__})
 

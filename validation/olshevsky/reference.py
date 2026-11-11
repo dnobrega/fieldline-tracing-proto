@@ -108,7 +108,7 @@ def compare_reference(result, grids, fields, ids, mode, max_step):
                 if not len(targets) or targets.max() <= 0:
                     continue
 
-                def rhs(t, p):
+                def rhs(t, p, evaluate=evaluate, sign=sign):
                     b = evaluate(p)
                     norm = np.linalg.norm(b)
                     if not np.isfinite(norm) or norm < 1e-14:
@@ -133,11 +133,11 @@ def compare_reference(result, grids, fields, ids, mode, max_step):
                 largest = max(largest, float(error.max()))
                 nfev += fit.nfev
             records.append(
-                dict(
-                    seed_index=int(idx),
-                    reference=name,
-                    max_position_error=largest,
-                    reference_nfev=nfev,
-                )
+                {
+                    "seed_index": int(idx),
+                    "reference": name,
+                    "max_position_error": largest,
+                    "reference_nfev": nfev,
+                }
             )
     return records

@@ -37,11 +37,11 @@ def test_unequal_branch_lengths_and_final_points(dtype, stride):
         saved_m = np.unique(np.r_[0, np.arange(stride, m + 1, stride), m])
         saved_p = np.unique(np.r_[0, np.arange(stride, p + 1, stride), p])
         expected = np.r_[-saved_m[:0:-1], saved_p] * 0.125
-        x, y, z, s = result.get_line(i)
+        _, _, z, s = result.get_line(i)
         np.testing.assert_allclose(z, seeds[i, 2] + expected)
         np.testing.assert_allclose(s, expected + m * 0.125)
         assert result.seed_index[i] == result.line_start[i] + len(saved_m) - 1
-    x, y, z, s = ragged_to_padded(result)
+    _x, _y, z, s = ragged_to_padded(result)
     for i, count in enumerate(result.line_count):
         np.testing.assert_array_equal(z[i, :count], result.get_line(i)[2])
         assert np.all(np.isnan(z[i, count:]))

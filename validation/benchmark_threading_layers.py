@@ -56,20 +56,20 @@ def compare(out, layers):
         "| --- | --- | --- | --- | " + " | ".join("---" for layer in layers) + " |",
     ]
     for key in sorted(baseline):
-        n, dtype, order, population, method, threads = key
+        n, _dtype, _order, population, method, threads = key
         times = " | ".join(
             f"{by_layer[layer][key]['warm_median_seconds']:.6f}" for layer in layers
         )
         lines.append(f"| {n} | {population} | {method} | {threads} | {times} |")
     problems = [
-        dict(
-            layer=layer,
-            n=key[0],
-            population=key[3],
-            method=key[4],
-            threads=key[5],
-            branches=row["nonstandard_terminations"],
-        )
+        {
+            "layer": layer,
+            "n": key[0],
+            "population": key[3],
+            "method": key[4],
+            "threads": key[5],
+            "branches": row["nonstandard_terminations"],
+        }
         for layer, rows in by_layer.items()
         for key, row in rows.items()
         if row["nonstandard_terminations"]
@@ -84,12 +84,12 @@ def compare(out, layers):
     (out / "REPORT.md").write_text("\n".join(lines))
     (out / "comparison.json").write_text(
         json.dumps(
-            dict(
-                layers=layers,
-                cases=len(baseline),
-                exact_output_and_counter_equality=True,
-                nonstandard_terminations=problems,
-            ),
+            {
+                "layers": layers,
+                "cases": len(baseline),
+                "exact_output_and_counter_equality": True,
+                "nonstandard_terminations": problems,
+            },
             indent=2,
         )
         + "\n"

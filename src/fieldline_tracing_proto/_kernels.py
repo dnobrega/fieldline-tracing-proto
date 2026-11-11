@@ -1295,7 +1295,7 @@ def _count_lines(
         i = order[k]
         for branch in range(2):
             sign = -1.0 if branch == 0 else 1.0
-            n, code, steps, length, rejected, fev, end, ok = _branch_flat(
+            n, code, steps, length, rejected, fev, end, _ok = _branch_flat(
                 bx,
                 by,
                 bz,
@@ -1375,7 +1375,7 @@ def _fill_lines(
         valid = True
         for branch in range(2):
             sign = -1.0 if branch == 0 else 1.0
-            n, code, steps, length, rejected, fev, end, good = _branch_flat(
+            n, code, steps, length, rejected, fev, _end, good = _branch_flat(
                 bx,
                 by,
                 bz,

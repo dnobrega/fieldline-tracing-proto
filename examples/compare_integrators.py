@@ -17,25 +17,25 @@ from fieldline_tracing_proto.tracing import trace_field_lines
 
 def main():
     grid = np.linspace(-3.0, 3.0, 17)
-    x, y, z = np.meshgrid(grid, grid, grid, indexing="ij")
+    x, y, _z = np.meshgrid(grid, grid, grid, indexing="ij")
     seeds = np.array([[1.0, 0.0, 0.0]])
     cases = [
-        ("RK2", dict(ds=0.01, max_steps=200)),
+        ("RK2", {"ds": 0.01, "max_steps": 200}),
         (
             "RK45",
-            dict(
-                ds=0.8,
-                max_steps=1000,
-                method="rk45",
-                max_length=2.0,
-                rtol=1e-9,
-                atol=1e-11,
-            ),
+            {
+                "ds": 0.8,
+                "max_steps": 1000,
+                "method": "rk45",
+                "max_length": 2.0,
+                "rtol": 1e-9,
+                "atol": 1e-11,
+            },
         ),
     ]
     for name, controls in cases:
 
-        def solve():
+        def solve(controls=controls):
             return trace_field_lines(
                 -y,
                 x,

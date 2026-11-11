@@ -39,34 +39,34 @@ def scalar_reference():
     centroid = quad(lambda z: z * gaussian(z), -1.0, 1.0, epsabs=1e-14)[0] / integral
     percentiles = [
         brentq(
-            lambda z: quad(gaussian, -1.0, z, epsabs=1e-14)[0] / integral - p,
+            lambda z, p=p: quad(gaussian, -1.0, z, epsabs=1e-14)[0] / integral - p,
             -1.0,
             1.0,
             xtol=1e-14,
         )
         for p in (0.16, 0.84)
     ]
-    return dict(
-        integral=integral,
-        mean=integral / 2,
-        max_abs=1.0,
-        centroid=centroid,
-        width=percentiles[1] - percentiles[0],
-    )
+    return {
+        "integral": integral,
+        "mean": integral / 2,
+        "max_abs": 1.0,
+        "centroid": centroid,
+        "width": percentiles[1] - percentiles[0],
+    }
 
 
 def scalar_case(method, stride=1, max_step=1 / 64):
     zgrid = np.linspace(-1.0, 1.0, 1025)
     xy = np.array([-1.0, 1.0])
-    x, y, z = np.meshgrid(xy, xy, zgrid, indexing="ij")
-    controls = dict(
-        ds=1 / 512,
-        max_steps=512,
-        save_stride=stride,
-        dtype=np.float64,
-        periodic_x=False,
-        periodic_y=False,
-    )
+    x, _y, z = np.meshgrid(xy, xy, zgrid, indexing="ij")
+    controls = {
+        "ds": 1 / 512,
+        "max_steps": 512,
+        "save_stride": stride,
+        "dtype": np.float64,
+        "periodic_x": False,
+        "periodic_y": False,
+    }
     if method == "rk45":
         controls.update(
             method="rk45",
@@ -116,30 +116,30 @@ def scalar_study():
     for study, method, stride, step in cases:
         result, diagnostics = scalar_case(method, stride, step)
         rows.append(
-            dict(
-                study=study,
-                method=method,
-                save_stride=stride,
-                integration_step_cap=step,
-                saved_points=result.total_points,
-                max_saved_gap=float(np.max(np.diff(result.sfl))),
-                integral_relative_error=abs(
+            {
+                "study": study,
+                "method": method,
+                "save_stride": stride,
+                "integration_step_cap": step,
+                "saved_points": result.total_points,
+                "max_saved_gap": float(np.max(np.diff(result.sfl))),
+                "integral_relative_error": abs(
                     float(diagnostics.integral[0]) / reference["integral"] - 1
                 ),
-                mean_relative_error=abs(
+                "mean_relative_error": abs(
                     float(diagnostics.mean[0]) / reference["mean"] - 1
                 ),
-                maximum_relative_error=abs(float(diagnostics.max_abs[0]) - 1),
-                centroid_absolute_error=abs(
+                "maximum_relative_error": abs(float(diagnostics.max_abs[0]) - 1),
+                "centroid_absolute_error": abs(
                     float(diagnostics.z_centroid_abs[0]) - reference["centroid"]
                 ),
-                width_absolute_error=abs(
+                "width_absolute_error": abs(
                     float(diagnostics.W68_s_abs[0]) - reference["width"]
                 ),
-                trajectory_max_error=float(
+                "trajectory_max_error": float(
                     np.max(np.abs(result.zfl - (result.sfl - 1.0)))
                 ),
-            )
+            }
         )
     return rows
 
@@ -176,26 +176,26 @@ def winding_study():
         for nsample in (5, 7, 9, 17, 33, 65, 129, 257):
             winding = pair_winding(synthetic_pair(points), nsample)
             rows.append(
-                dict(
-                    study="synthetic",
-                    method="analytic",
-                    save_stride=0,
-                    saved_points_per_line=points,
-                    nsample=nsample,
-                    expected_winding=3.0,
-                    measured_winding=winding,
-                    absolute_error=abs(winding - 3.0),
-                )
+                {
+                    "study": "synthetic",
+                    "method": "analytic",
+                    "save_stride": 0,
+                    "saved_points_per_line": points,
+                    "nsample": nsample,
+                    "expected_winding": 3.0,
+                    "measured_winding": winding,
+                    "absolute_error": abs(winding - 3.0),
+                }
             )
     # End-to-end pair on equal-radius helices, same normalized arc-length phases.
     xy = np.linspace(-2.0, 2.0, 9)
     zg = np.linspace(-4.0, 4.0, 5)
-    x, y, z = np.meshgrid(xy, xy, zg, indexing="ij")
+    x, y, _z = np.meshgrid(xy, xy, zg, indexing="ij")
     seeds = np.array([[1.0, 0.0, 0.0], [np.cos(0.2), np.sin(0.2), 0.0]])
     length = np.pi * np.sqrt(2.0)
     for method in ("rk2", "rk45"):
         for stride in (1, 4, 16, 64, 256, 4096):
-            controls = dict(ds=length / 2048, max_steps=2048)
+            controls = {"ds": length / 2048, "max_steps": 2048}
             if method == "rk45":
                 controls.update(
                     method=method,
@@ -222,16 +222,16 @@ def winding_study():
             )
             winding = pair_winding(result, 257)
             rows.append(
-                dict(
-                    study="traced-helix",
-                    method=method,
-                    save_stride=stride,
-                    saved_points_per_line=int(result.line_count[0]),
-                    nsample=257,
-                    expected_winding=1.0,
-                    measured_winding=winding,
-                    absolute_error=abs(winding - 1.0),
-                )
+                {
+                    "study": "traced-helix",
+                    "method": method,
+                    "save_stride": stride,
+                    "saved_points_per_line": int(result.line_count[0]),
+                    "nsample": 257,
+                    "expected_winding": 1.0,
+                    "measured_winding": winding,
+                    "absolute_error": abs(winding - 1.0),
+                }
             )
     return rows
 
@@ -243,18 +243,18 @@ def main(output):
     write_csv(output / "scalar.csv", scalar)
     write_csv(output / "winding.csv", winding)
     root = Path(__file__).resolve().parents[1]
-    environment = dict(
-        python=platform.python_version(),
-        numpy=np.__version__,
-        numba=numba.__version__,
-        threads=numba.get_num_threads(),
-        dtype="float64",
-        scalar_reference=scalar_reference(),
-        source_sha256={
+    environment = {
+        "python": platform.python_version(),
+        "numpy": np.__version__,
+        "numba": numba.__version__,
+        "threads": numba.get_num_threads(),
+        "dtype": "float64",
+        "scalar_reference": scalar_reference(),
+        "source_sha256": {
             str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in [Path(__file__).resolve(), *sorted((root / "src").rglob("*.py"))]
         },
-    )
+    }
     (output / "environment.json").write_text(json.dumps(environment, indent=2) + "\n")
     synthetic = [
         r

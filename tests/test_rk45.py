@@ -16,22 +16,22 @@ from fieldline_tracing_proto.tracing import (
 
 def run(field="circle", dtype=np.float64, **options):
     grid = np.linspace(-3.0, 3.0, 9)
-    x, y, z = np.meshgrid(grid, grid, grid, indexing="ij")
+    x, y, _z = np.meshgrid(grid, grid, grid, indexing="ij")
     bx, by, bz = -y, x, np.zeros_like(x)
     if field == "straight":
         bx, by, bz = np.zeros_like(x), np.zeros_like(x), np.ones_like(x)
     if field == "helix":
         bz = np.ones_like(x) * 0.5
-    opts = dict(
-        ds=0.8,
-        max_steps=1000,
-        method="rk45",
-        dtype=dtype,
-        max_length=2.0,
-        periodic_x=False,
-        periodic_y=False,
-        seeds=np.array([[1.0, 0.0, 0.0]]),
-    )
+    opts = {
+        "ds": 0.8,
+        "max_steps": 1000,
+        "method": "rk45",
+        "dtype": dtype,
+        "max_length": 2.0,
+        "periodic_x": False,
+        "periodic_y": False,
+        "seeds": np.array([[1.0, 0.0, 0.0]]),
+    }
     opts.update(options)
     return trace_field_lines(
         bx, by, bz, grid, grid, grid, **opts, periodic_convention="endpoint_included"
@@ -202,7 +202,7 @@ def test_independent_reference_on_same_nonuniform_interpolated_field():
     interp = RegularGridInterpolator((grid, grid, grid), np.stack(fields, axis=-1))
     for sign, endpoint in ((-1.0, 0), (1.0, -1)):
 
-        def rhs(s, pos):
+        def rhs(s, pos, sign=sign):
             b = interp(pos)[0]
             return sign * b / np.linalg.norm(b)
 
@@ -272,7 +272,7 @@ def test_empty_seeds():
 def test_curved_boundary_crossing():
     horizontal = np.linspace(-2.0, 2.0, 9)
     vertical = np.linspace(-0.2, 0.2, 5)
-    x, y, z = np.meshgrid(horizontal, horizontal, vertical, indexing="ij")
+    x, y, _z = np.meshgrid(horizontal, horizontal, vertical, indexing="ij")
     r = trace_field_lines(
         -y,
         x,

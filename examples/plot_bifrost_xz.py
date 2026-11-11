@@ -40,7 +40,7 @@ def plot_bifrost_xz(dd, snap, null, *, half_width=3.0, density=1.5):
         zsel = slice(
             max(zall[0], null[2] - half_width), min(zall[-1], null[2] + half_width)
         )
-    selection = dict(x=xsel, y=yplane, z=zsel)
+    selection = {"x": xsel, "y": yplane, "z": zsel}
     x = np.asarray(dd.get_x(x=xsel), dtype=float)
     z = np.asarray(dd.get_z(z=zsel, uniform_z=True), dtype=float)
     if x.size < 2 or z.size < 2:

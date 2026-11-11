@@ -31,7 +31,7 @@ def parabola_arc(y):
 
 def parabola_trace(clearance, rtol=1e-9, max_step=np.inf):
     grid = np.linspace(-1.0, 1.0, 9)
-    x, y, z = np.meshgrid(grid, grid, np.array([-1.0, 1.0]), indexing="ij")
+    x, y, _z = np.meshgrid(grid, grid, np.array([-1.0, 1.0]), indexing="ij")
     return trace_field_lines(
         -2 * y,
         np.ones_like(x),
@@ -91,7 +91,7 @@ def cubic_reference(grid=None, length=1.2, alpha=0.75):
 def cubic_trace(nodes, rtol, max_step=0.3):
     grid = np.linspace(-2.0, 2.0, nodes)
     yz = np.array([-2.0, 2.0])
-    x, y, z = np.meshgrid(grid, yz, yz, indexing="ij")
+    x, _y, _z = np.meshgrid(grid, yz, yz, indexing="ij")
     return trace_field_lines(
         np.ones_like(x),
         np.zeros_like(x),
@@ -127,21 +127,21 @@ def convergence_study():
         result = cubic_trace(nodes, rtol, max_step)
         position = np.array([result.xfl[-1], result.yfl[-1], result.zfl[-1]])
         rows.append(
-            dict(
-                study=study,
-                nodes_x=nodes,
-                spacing=4 / (nodes - 1),
-                rtol=rtol,
-                atol=rtol * 0.01,
-                max_step=max_step,
-                length=1.2,
-                integration_error=float(np.linalg.norm(position - reference)),
-                interpolation_error=float(np.linalg.norm(reference - exact)),
-                total_error=float(np.linalg.norm(position - exact)),
-                accepted=int(result.nsteps_plus[0]),
-                rejected=int(result.nrejected_plus[0]),
-                exit_plus=int(result.exit_code_plus[0]),
-            )
+            {
+                "study": study,
+                "nodes_x": nodes,
+                "spacing": 4 / (nodes - 1),
+                "rtol": rtol,
+                "atol": rtol * 0.01,
+                "max_step": max_step,
+                "length": 1.2,
+                "integration_error": float(np.linalg.norm(position - reference)),
+                "interpolation_error": float(np.linalg.norm(reference - exact)),
+                "total_error": float(np.linalg.norm(position - exact)),
+                "accepted": int(result.nsteps_plus[0]),
+                "rejected": int(result.nrejected_plus[0]),
+                "exit_plus": int(result.exit_code_plus[0]),
+            }
         )
     return rows
 
@@ -158,44 +158,44 @@ def boundary_study():
                 else 1.3
             )
             rows.append(
-                dict(
-                    scenario="parabola",
-                    clearance=clearance,
-                    rtol=tol,
-                    max_step="unlimited",
-                    expected_exit=expected_code,
-                    actual_exit=int(result.exit_code_plus[0]),
-                    expected_length=expected_length,
-                    actual_length=float(result.length_plus[0]),
-                    length_error=abs(float(result.length_plus[0]) - expected_length),
-                    endpoint_x=float(result.xfl[-1]),
-                    endpoint_y=float(result.yfl[-1]),
-                    accepted=int(result.nsteps_plus[0]),
-                    rejected=int(result.nrejected_plus[0]),
-                    matches_expected_exit=int(result.exit_code_plus[0])
+                {
+                    "scenario": "parabola",
+                    "clearance": clearance,
+                    "rtol": tol,
+                    "max_step": "unlimited",
+                    "expected_exit": expected_code,
+                    "actual_exit": int(result.exit_code_plus[0]),
+                    "expected_length": expected_length,
+                    "actual_length": float(result.length_plus[0]),
+                    "length_error": abs(float(result.length_plus[0]) - expected_length),
+                    "endpoint_x": float(result.xfl[-1]),
+                    "endpoint_y": float(result.yfl[-1]),
+                    "accepted": int(result.nsteps_plus[0]),
+                    "rejected": int(result.nrejected_plus[0]),
+                    "matches_expected_exit": int(result.exit_code_plus[0])
                     == expected_code,
-                )
+                }
             )
     for step in (0.01, 0.001):
         result = parabola_trace(-1e-6, 1e-9, step)
         expected_length = parabola_arc(-0.001) - parabola_arc(-0.5)
         rows.append(
-            dict(
-                scenario="parabola",
-                clearance=-1e-6,
-                rtol=1e-9,
-                max_step=step,
-                expected_exit=6,
-                actual_exit=int(result.exit_code_plus[0]),
-                expected_length=expected_length,
-                actual_length=float(result.length_plus[0]),
-                length_error=abs(float(result.length_plus[0]) - expected_length),
-                endpoint_x=float(result.xfl[-1]),
-                endpoint_y=float(result.yfl[-1]),
-                accepted=int(result.nsteps_plus[0]),
-                rejected=int(result.nrejected_plus[0]),
-                matches_expected_exit=int(result.exit_code_plus[0]) == 6,
-            )
+            {
+                "scenario": "parabola",
+                "clearance": -1e-6,
+                "rtol": 1e-9,
+                "max_step": step,
+                "expected_exit": 6,
+                "actual_exit": int(result.exit_code_plus[0]),
+                "expected_length": expected_length,
+                "actual_length": float(result.length_plus[0]),
+                "length_error": abs(float(result.length_plus[0]) - expected_length),
+                "endpoint_x": float(result.xfl[-1]),
+                "endpoint_y": float(result.yfl[-1]),
+                "accepted": int(result.nsteps_plus[0]),
+                "rejected": int(result.nrejected_plus[0]),
+                "matches_expected_exit": int(result.exit_code_plus[0]) == 6,
+            }
         )
     return rows
 
@@ -225,26 +225,26 @@ def generate_report(output):
     boundaries = boundary_study()
     write_csv(output / "convergence.csv", convergence)
     write_csv(output / "boundaries.csv", boundaries)
-    environment = dict(
-        python=platform.python_version(),
-        platform=platform.platform(),
-        machine=platform.machine(),
-        numpy=np.__version__,
-        numba=numba.__version__,
-        scipy=scipy.__version__,
-        numba_threads=numba.get_num_threads(),
-        storage_dtype="float64",
-        boundary_cases_all_match=all(r["matches_expected_exit"] for r in boundaries),
-        crossing_cases_all_detected=all(
+    environment = {
+        "python": platform.python_version(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+        "numpy": np.__version__,
+        "numba": numba.__version__,
+        "scipy": scipy.__version__,
+        "numba_threads": numba.get_num_threads(),
+        "storage_dtype": "float64",
+        "boundary_cases_all_match": all(r["matches_expected_exit"] for r in boundaries),
+        "crossing_cases_all_detected": all(
             r["matches_expected_exit"] for r in boundaries if r["clearance"] < 0
         ),
-        interior_cases_all_complete=all(
+        "interior_cases_all_complete": all(
             r["matches_expected_exit"] for r in boundaries if r["clearance"] > 0
         ),
-        exact_contact_face_exits=sum(
+        "exact_contact_face_exits": sum(
             r["actual_exit"] == 6 for r in boundaries if r["clearance"] == 0
         ),
-    )
+    }
     root = Path(__file__).resolve().parents[1]
     environment["source_sha256"] = {
         str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()

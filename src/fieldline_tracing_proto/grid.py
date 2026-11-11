@@ -42,7 +42,10 @@ def is_uniform_grid(grid, rtol=None, atol=0.0):
     return bool(np.max(np.abs(g - np.linspace(g[0], g[-1], g.size))) <= tolerance)
 
 
-def _inv_spacing(grid, dtype=np.dtype(np.float64)):
+_FLOAT64_DTYPE = np.dtype(np.float64)
+
+
+def _inv_spacing(grid, dtype=_FLOAT64_DTYPE):
     return dtype.type((len(grid) - 1) / (float(grid[-1]) - float(grid[0])))
 
 

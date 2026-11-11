@@ -66,17 +66,17 @@ def test_bounded_step_detects_this_specific_excursion(max_step):
 def constant_field_trace(vector, seed=(0.0, 0.0, 0.0), **controls):
     grid = np.linspace(-1.0, 1.0, 5)
     shape = (5, 5, 5)
-    opts = dict(
-        ds=0.7,
-        max_steps=1000,
-        method="rk45",
-        max_length=5.0,
-        periodic_x=False,
-        periodic_y=False,
-        periodic_z=False,
-        dtype=np.float64,
-        boundary_tol=1e-9,
-    )
+    opts = {
+        "ds": 0.7,
+        "max_steps": 1000,
+        "method": "rk45",
+        "max_length": 5.0,
+        "periodic_x": False,
+        "periodic_y": False,
+        "periodic_z": False,
+        "dtype": np.float64,
+        "boundary_tol": 1e-9,
+    }
     opts.update(controls)
     return trace_field_lines(
         *(np.full(shape, v) for v in vector),
